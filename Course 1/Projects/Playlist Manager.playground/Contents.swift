@@ -1,6 +1,6 @@
 import UIKit
 
-struct Song: CustomStringConvertible {
+struct Song: Equatable, CustomStringConvertible {
     let title: String
     let artist: String
     let duration: Double
@@ -30,7 +30,53 @@ class Playlist {
     func allSongs() -> [Song] {
         return songs
     }
-    
+    func totalDuration() -> Int{
+        var total = 0
+        
+        for song in songs {
+            total += Int(song.duration)
+        }
+        return total
+    }
+    func currentSong() -> Song? {
+        return currentlyPlaying
+    }
+    func play(at index: Int) -> Song? {
+        if index >= 0 && index < songs.count {
+            let song = songs[index]
+            currentlyPlaying = song
+            return song
+        } else {
+            return nil
+        }
+    }
+    func playNext() -> Song? {
+        guard
+            let current = currentlyPlaying,
+            let index = songs.firstIndex(of: current),
+            index + 1 < songs.count
+        else {
+            return nil
+        }
+        currentlyPlaying = songs[index + 1]
+        return currentlyPlaying
+    }
+    func playPrevious() -> Song? {
+        guard
+            let current = currentlyPlaying,
+            let index = songs.firstIndex(where: { $0.title == current.title}),
+            index - 1 >= 0
+        else {
+            print("previous doesn't work")
+            return nil
+        }
+        currentlyPlaying = songs[index - 1]
+        return currentlyPlaying
+    }
+    func shuffle() {
+    }
+    func clear() {
+    }
 }
 
 let song1 = Song(title: "Song1", artist: "Author1", duration: 3)
@@ -53,4 +99,35 @@ let count = myPlaylist.allSongs().count
 print(myPlaylist.count)
 print("This playlist has \(myPlaylist.count) songs")
 
+let total = myPlaylist.totalDuration()
+print("Total duration: \(total) seconds")
 
+if let song = myPlaylist.currentlyPlaying {
+    print("Currently playing \(song.title) by \(song.artist)")
+} else {
+    print("No song playing.")
+}
+
+if let song = myPlaylist.play(at: 1) {
+    print("Currently playing \(song.title) by \(song.artist)")
+} else {
+    print("No song playing")
+}
+
+if let song = myPlaylist.playNext() {
+    print("Now playing \(song.title) by \(song.artist)")
+} else {
+    print("No more songs to play")
+}
+
+if let song = myPlaylist.playPrevious() {
+    print("Now playing \(song.title) by \(song.artist)")
+} else {
+    print("No more songs to play")
+}
+
+myPlaylist.playPrevious()
+
+myPlaylist.shuffle()
+
+myPlaylist.clear()
