@@ -19,7 +19,7 @@ struct ContentView: View {
             Text(calculator.displayedString)
                 .font(.system(size: 90))
                 .minimumScaleFactor(0.3)
-                .foregroundStyle(.black)
+                .foregroundStyle(.white)
                 .frame(height: 150)
                 .containerRelativeFrame(.horizontal)
                 .background {
@@ -27,8 +27,8 @@ struct ContentView: View {
                         .fill(
                             LinearGradient(
                                 colors: [
-                                    .yellow,
-                                    .white
+                                    .black,
+                                    .black
                                 ],
                                 startPoint: .topLeading, endPoint: .bottomTrailing)
                         )
@@ -74,7 +74,7 @@ extension CalculatorInput {
         case .backspace, .clear, .percent, .invertSign:
             return .gray
         case .divide, .multiply, .subtract, .add, .equal:
-            return .orange
+            return .red
         default:
             return .primary
         }

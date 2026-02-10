@@ -50,10 +50,38 @@ class Calculator {
             number(Int(input.rawValue)!)
         }
     }
+//    func operationTapped(_ operation: String) {
+//        firstNumber = Double(displayedString)
+//        currentOperation = operation
+//        displayedString = "0"
     func operationTapped(_ operation: String) {
-        firstNumber = Double(displayedString)
+        if let existingOp = currentOperation,
+            let first = firstNumber,
+           let second = Double(displayedString) {
+            //Compute intermediate result
+            var result: Double = 0
+            switch existingOp {
+            case "+":
+                result = first + second
+            case "-":
+                result = first - second
+            case "×":
+                result = first * second
+            case "÷":
+                result = second == 0 ? 0 : first / second
+            default:
+                result = second
+            }
+            //Update state for chaining
+            firstNumber = result
+            displayedString = String(format: "%g", result)
+        } else {
+            //First operator in the chain
+            firstNumber = Double(displayedString)
+        }
+        //Set the new pending operation and prepare for next number
         currentOperation = operation
-        displayedString = ""
+        displayedString = "0"
     }
     func equalSign() {
         guard let first = firstNumber,
@@ -83,18 +111,65 @@ class Calculator {
             operationTapped(value)
         case "=":
             equalSign()
-        case "%":
-            percentOf()
+//            operationTapped(value)
+//        case "%":
+//            percentOf()
+//           operationTapped(value)
         default:
-            displayedString = displayedString == "" ? value : displayedString + value
+            displayedString = displayedString == "0" ? value : displayedString + value
         }
     }
 
     
     func decimalPoint() {
+//If starting a new entry
+        if displayedString.isEmpty {
+            displayedString = "0"
+            return
+        }
+//If the current display is just "0", make it "0."
+        if displayedString == "0" {
+            displayedString = "0."
+            return
+        }
+//Prevent multiple decimals
+        if displayedString.contains("."){
+            return
+        }
+//Append a decimal
+        displayedString += "."
     }
     
     func invertSignTapped() {
+        if displayedString.isEmpty {
+            displayedString = "0"
+            return
+        }
+        if let value = Double(displayedString) {
+            let flipped = -value
+            
+            if flipped == 0 {
+                displayedString = "0"
+            } else {
+                displayedString = String(format: "%g", flipped)
+            }
+        } else {
+            displayedString = "0"
+        }
+        
+    }
+    func percentOf() {
+//If display is empty, treat as "0"
+        if displayedString.isEmpty {
+            displayedString = "0"
+            return
+        }
+        if let value = Double(displayedString) {
+            let percent = value / 100.0
+            displayedString = String(format: "%g", percent)
+        } else {
+            displayedString = "0"
+        }
     }
     
     func addition() {
@@ -113,23 +188,29 @@ class Calculator {
        operationTapped("÷")
     }
     
-    func percentOf() {
-       operationTapped("%")
-    }
-    
     func clearTapped() {
-        displayedString = ""
+        displayedString = "0"
         firstNumber = nil
         currentOperator = nil
         isTypingNumber = false
     }
     
     func backspaceTapped() {
-        displayedString = String(displayedString.dropLast())
+        if !displayedString.isEmpty {
+            displayedString.removeLast()
+        }
+        if displayedString.isEmpty {
+            displayedString = "0"
+        }
     }
     
     func number(_ number: Int) {
-        displayedString += "\(number)"
+        if displayedString == "0" {
+            displayedString = "\(number)"
+        } else {
+            displayedString +=  "\(number)"
+        }
+//        displayedString += "\(number)"
     }
 }
 
