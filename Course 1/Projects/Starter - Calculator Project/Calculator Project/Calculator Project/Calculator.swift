@@ -72,11 +72,11 @@ class Calculator {
             default:
                 result = second
             }
-            //Update state for chaining
+            //Update for chaining
             firstNumber = result
             displayedString = String(format: "%g", result)
         } else {
-            //First operator in the chain
+            //First operator
             firstNumber = Double(displayedString)
         }
         //Set the new pending operation and prepare for next number
@@ -127,7 +127,7 @@ class Calculator {
             displayedString = "0"
             return
         }
-//If the current display is just "0", make it "0."
+//If the current display is "0", make it "0."
         if displayedString == "0" {
             displayedString = "0."
             return
@@ -210,7 +210,6 @@ class Calculator {
         } else {
             displayedString +=  "\(number)"
         }
-//        displayedString += "\(number)"
     }
 }
 
